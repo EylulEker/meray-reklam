@@ -20,7 +20,7 @@ for (const file of files) {
   if (!noindex && !description) errors.push(`${file}: meta description eksik`);
   if (!noindex && h1Count !== 1) errors.push(`${file}: H1 sayısı ${h1Count}`);
   const canonical = html.match(/<link\s+rel="canonical"\s+href="([^"]+)"/i)?.[1];
-  const expectedCanonical = file === 'index.html' ? `${siteOrigin}/` : `${siteOrigin}/${file}`;
+  const expectedCanonical = file === 'index.html' ? `${siteOrigin}/` : `${siteOrigin}/${file.replace(/\.html$/, '')}`;
   if (!noindex && !canonical) errors.push(`${file}: canonical eksik`);
   if (!noindex && canonical && canonical !== expectedCanonical) errors.push(`${file}: canonical hatalı ${canonical}`);
   if (!noindex && !/application\/ld\+json/.test(html)) errors.push(`${file}: yapılandırılmış veri eksik`);
@@ -40,8 +40,14 @@ for (const file of files) {
   for (const match of html.matchAll(/\s(?:href|src)="([^"]+)"/gi)) {
     const ref = match[1].split('#')[0].split('?')[0];
     if (!ref || /^(?:https?:|mailto:|tel:|data:|\/\/|#)/.test(ref) || ref === './') continue;
-    if (!fs.existsSync(path.join(root, ref))) errors.push(`${file}: yerel bağlantı bulunamadı ${ref}`);
+    const localRef = ref.replace(/^\/+/, '');
+    if (!localRef) continue;
+    const directPath = path.join(root, localRef);
+    const cleanUrlPath = path.join(root, `${localRef}.html`);
+    if (!fs.existsSync(directPath) && !fs.existsSync(cleanUrlPath)) errors.push(`${file}: yerel bağlantı bulunamadı ${ref}`);
   }
+
+  if (/href="(?!https?:\/\/|\/\/)[^"]+\.html(?:#[^"]*)?"/i.test(html)) errors.push(`${file}: .html uzantılı dahili bağlantı bulundu`);
 }
 
 const placeholders = [];
@@ -55,6 +61,12 @@ const robots = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8');
 const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
 if (!robots.includes(`Sitemap: ${siteOrigin}/sitemap.xml`)) errors.push('robots.txt: sitemap adresi hatalı');
 if (/eyluleker\.github\.io\/meray-reklam/.test(sitemap)) errors.push('sitemap.xml: eski GitHub Pages adresi bulundu');
+if (/\.html<\/loc>/.test(sitemap)) errors.push('sitemap.xml: .html uzantılı URL bulundu');
+
+const vercelConfig = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
+if (vercelConfig.cleanUrls !== true) errors.push('vercel.json: cleanUrls etkin değil');
+const indexRedirect = vercelConfig.redirects?.find(item => item.source === '/index.html');
+if (!indexRedirect || indexRedirect.destination !== '/' || indexRedirect.statusCode !== 301) errors.push('vercel.json: /index.html 301 yönlendirmesi hatalı');
 
 console.log(JSON.stringify({ pages: files.length, indexedPages, errors, warnings }, null, 2));
 process.exitCode = errors.length ? 1 : 0;

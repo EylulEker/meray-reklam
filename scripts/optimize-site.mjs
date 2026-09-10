@@ -65,12 +65,14 @@ for (const file of pages) {
   const title = textContent(html.match(/<title>([\s\S]*?)<\/title>/i)?.[1]);
   const description = html.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1] || '';
   const h1 = textContent(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1]) || title;
-  const canonical = file === 'index.html' ? `${siteOrigin}/` : `${siteOrigin}/${file}`;
+  const route = file === 'index.html' ? '' : `/${file.replace(/\.html$/, '')}`;
+  const canonical = file === 'index.html' ? `${siteOrigin}/` : `${siteOrigin}${route}`;
 
   html = html.replace(/<link\s+rel="canonical"\s+href="[^"]*">/i, `<link rel="canonical" href="${canonical}">`);
   if (!html.includes('rel="canonical"')) {
     html = html.replace(/(<meta\s+name="description"[^>]*>)/i, `$1<link rel="canonical" href="${canonical}">`);
   }
+  html = html.replace(/href="(?!https?:\/\/|\/\/)([^"#?]+)\.html(#[^"]*)?"/gi, (_, routePath, fragment = '') => `href="/${routePath.replace(/^\/+/, '')}${fragment}"`);
   html = html.replace(/<meta\s+property="og:url"\s+content="https:\/\/\[SITE_URL\][^"]*">/gi, '');
   html = html.replace(/https:\/\/\[SITE_URL\]\/(assets\/images\/[^"<]+?)\.png/gi, '$1.webp');
   html = html.replace(/https:\/\/\[SITE_URL\]\/(assets\/[^"]+)/gi, '$1');

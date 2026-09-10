@@ -6,7 +6,7 @@ const headerStart = source.indexOf('<header');
 const headerEnd = source.indexOf('</header>', headerStart) + '</header>'.length;
 const footerStart = source.indexOf('<footer');
 let header = source.slice(headerStart, headerEnd)
-  .replace(' class="active" href="hakkimizda.html"', ' href="hakkimizda.html"')
+  .replace(' class="active" href="/hakkimizda"', ' href="/hakkimizda"')
   .replace(' href="/#hizmetler">Hizmetler', ' class="active" href="/#hizmetler">Hizmetler');
 const footer = source.slice(footerStart);
 const topbar = topbarStart >= 0 ? source.slice(topbarStart, headerStart) : '';
