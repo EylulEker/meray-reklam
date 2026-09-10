@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
+const siteOrigin = 'https://www.merayreklam.com';
 const files = fs.readdirSync(root).filter(file => file.endsWith('.html'));
 const errors = [];
 const warnings = [];
@@ -18,7 +19,10 @@ for (const file of files) {
   if (!title) errors.push(`${file}: title eksik`);
   if (!noindex && !description) errors.push(`${file}: meta description eksik`);
   if (!noindex && h1Count !== 1) errors.push(`${file}: H1 sayısı ${h1Count}`);
-  if (!noindex && !/rel="canonical"/.test(html)) errors.push(`${file}: canonical eksik`);
+  const canonical = html.match(/<link\s+rel="canonical"\s+href="([^"]+)"/i)?.[1];
+  const expectedCanonical = file === 'index.html' ? `${siteOrigin}/` : `${siteOrigin}/${file}`;
+  if (!noindex && !canonical) errors.push(`${file}: canonical eksik`);
+  if (!noindex && canonical && canonical !== expectedCanonical) errors.push(`${file}: canonical hatalı ${canonical}`);
   if (!noindex && !/application\/ld\+json/.test(html)) errors.push(`${file}: yapılandırılmış veri eksik`);
   if (!noindex && !/max-image-preview:large/.test(html)) warnings.push(`${file}: büyük görsel önizleme yönergesi eksik`);
   if (!/name="viewport"/.test(html)) errors.push(`${file}: viewport eksik`);
@@ -46,6 +50,11 @@ for (const file of ['robots.txt', 'sitemap.xml', ...files]) {
   if (fs.existsSync(fullPath) && fs.readFileSync(fullPath, 'utf8').includes('[SITE_URL]')) placeholders.push(file);
 }
 if (placeholders.length) warnings.push(`Alan adı yer tutucusu: ${placeholders.join(', ')}`);
+
+const robots = fs.readFileSync(path.join(root, 'robots.txt'), 'utf8');
+const sitemap = fs.readFileSync(path.join(root, 'sitemap.xml'), 'utf8');
+if (!robots.includes(`Sitemap: ${siteOrigin}/sitemap.xml`)) errors.push('robots.txt: sitemap adresi hatalı');
+if (/eyluleker\.github\.io\/meray-reklam/.test(sitemap)) errors.push('sitemap.xml: eski GitHub Pages adresi bulundu');
 
 console.log(JSON.stringify({ pages: files.length, indexedPages, errors, warnings }, null, 2));
 process.exitCode = errors.length ? 1 : 0;

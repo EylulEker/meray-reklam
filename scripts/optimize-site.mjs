@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
+const siteOrigin = 'https://www.merayreklam.com';
 const pages = fs.readdirSync(root).filter(name => name.endsWith('.html'));
 const servicePages = new Set([
   'aydin-arac-giydirme.html', 'aydin-cephe-giydirme.html', 'aydin-cnc-kesim.html',
@@ -64,7 +65,7 @@ for (const file of pages) {
   const title = textContent(html.match(/<title>([\s\S]*?)<\/title>/i)?.[1]);
   const description = html.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1] || '';
   const h1 = textContent(html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1]) || title;
-  const canonical = file === 'index.html' ? './' : file;
+  const canonical = file === 'index.html' ? `${siteOrigin}/` : `${siteOrigin}/${file}`;
 
   html = html.replace(/<link\s+rel="canonical"\s+href="[^"]*">/i, `<link rel="canonical" href="${canonical}">`);
   if (!html.includes('rel="canonical"')) {

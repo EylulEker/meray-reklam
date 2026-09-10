@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 Disallow: /404.html
-Sitemap: https://eyluleker.github.io/meray-reklam/sitemap.xml
+Sitemap: https://www.merayreklam.com/sitemap.xml
