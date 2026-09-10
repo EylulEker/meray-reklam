@@ -1,0 +1,51 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
+const root = process.cwd();
+const files = fs.readdirSync(root).filter(file => file.endsWith('.html'));
+const errors = [];
+const warnings = [];
+let indexedPages = 0;
+
+for (const file of files) {
+  const html = fs.readFileSync(path.join(root, file), 'utf8');
+  const noindex = /name="robots"[^>]*content="[^"]*noindex/i.test(html);
+  if (!noindex) indexedPages++;
+
+  const title = html.match(/<title>([\s\S]*?)<\/title>/i)?.[1]?.trim() || '';
+  const description = html.match(/<meta\s+name="description"\s+content="([^"]*)"/i)?.[1] || '';
+  const h1Count = (html.match(/<h1\b/gi) || []).length;
+  if (!title) errors.push(`${file}: title eksik`);
+  if (!noindex && !description) errors.push(`${file}: meta description eksik`);
+  if (!noindex && h1Count !== 1) errors.push(`${file}: H1 sayısı ${h1Count}`);
+  if (!noindex && !/rel="canonical"/.test(html)) errors.push(`${file}: canonical eksik`);
+  if (!noindex && !/application\/ld\+json/.test(html)) errors.push(`${file}: yapılandırılmış veri eksik`);
+  if (!noindex && !/max-image-preview:large/.test(html)) warnings.push(`${file}: büyük görsel önizleme yönergesi eksik`);
+  if (!/name="viewport"/.test(html)) errors.push(`${file}: viewport eksik`);
+
+  for (const match of html.matchAll(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/gi)) {
+    try { JSON.parse(match[1]); } catch { errors.push(`${file}: geçersiz JSON-LD`); }
+  }
+
+  for (const match of html.matchAll(/<img\b([^>]*)>/gi)) {
+    if (!/\salt="[^"]*"/.test(match[1])) errors.push(`${file}: alt metni olmayan görsel`);
+    const src = match[1].match(/\ssrc="([^"]+)"/)?.[1];
+    if (src && !/^(?:https?:|data:|\/\/)/.test(src) && !fs.existsSync(path.join(root, src))) errors.push(`${file}: görsel bulunamadı ${src}`);
+  }
+
+  for (const match of html.matchAll(/\s(?:href|src)="([^"]+)"/gi)) {
+    const ref = match[1].split('#')[0].split('?')[0];
+    if (!ref || /^(?:https?:|mailto:|tel:|data:|\/\/|#)/.test(ref) || ref === './') continue;
+    if (!fs.existsSync(path.join(root, ref))) errors.push(`${file}: yerel bağlantı bulunamadı ${ref}`);
+  }
+}
+
+const placeholders = [];
+for (const file of ['robots.txt', 'sitemap.xml', ...files]) {
+  const fullPath = path.join(root, file);
+  if (fs.existsSync(fullPath) && fs.readFileSync(fullPath, 'utf8').includes('[SITE_URL]')) placeholders.push(file);
+}
+if (placeholders.length) warnings.push(`Alan adı yer tutucusu: ${placeholders.join(', ')}`);
+
+console.log(JSON.stringify({ pages: files.length, indexedPages, errors, warnings }, null, 2));
+process.exitCode = errors.length ? 1 : 0;
