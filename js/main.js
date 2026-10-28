@@ -50,7 +50,7 @@ document.querySelectorAll('form[data-whatsapp-form]').forEach(form=>form.addEven
   e.preventDefault();
   const data=new FormData(form);
   const value=name=>String(data.get(name)||'').trim();
-  const file=data.get('file');
+
   const lines=[
     'Merhaba Meray Reklam, web siteniz üzerinden teklif talebi gönderiyorum.',
     '',
@@ -60,7 +60,7 @@ document.querySelectorAll('form[data-whatsapp-form]').forEach(form=>form.addEven
     `Ölçü: ${value('measure')||'Belirtilmedi'}`,
     `Mesaj: ${value('message')}`
   ];
-  if(file instanceof File&&file.name)lines.push(`Dosya: ${file.name} (WhatsApp görüşmesinden ayrıca eklenecek)`);
+
   const url=`https://wa.me/905067273465?text=${encodeURIComponent(lines.join('\n'))}`;
   const popup=window.open(url,'_blank');
   if(popup)popup.opener=null;else window.location.href=url;
