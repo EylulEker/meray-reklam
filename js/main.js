@@ -87,5 +87,17 @@ document.querySelectorAll('form[data-email-form]').forEach(form=>form.addEventLi
     '',
     'İlgili proje dosyaları bu e-postaya eklenecektir.'
   ];
-  window.location.href=`mailto:merayreklam@hotmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+  const body=lines.join('\n');
+  const recipient='merayreklam@hotmail.com';
+  const options=form.querySelector('[data-email-options]');
+  const gmail=form.querySelector('[data-email-gmail]');
+  const outlook=form.querySelector('[data-email-outlook]');
+  const fallback=form.querySelector('[data-email-default]');
+  gmail.href=`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(recipient)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  outlook.href=`https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(recipient)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  fallback.href=`mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  options.hidden=false;
+  options.classList.remove('is-ready');
+  requestAnimationFrame(()=>options.classList.add('is-ready'));
+  gmail.focus({preventScroll:true});
 }));

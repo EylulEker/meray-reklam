@@ -29,6 +29,15 @@
 .btn-email:hover{background:#ff963d}
 .btn-email .btn-icon{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .enterprise-notice{margin:2px 0 0;color:#8f8f8a;font-size:12px;line-height:1.55}
+.email-options{display:grid;gap:15px;margin-top:12px;padding:17px;border:1px solid rgba(245,130,32,.45);border-radius:14px;background:rgba(245,130,32,.08);opacity:0;transform:translateY(8px);transition:opacity .3s var(--ease),transform .3s var(--ease)}
+.email-options[hidden]{display:none}
+.email-options.is-ready{opacity:1;transform:none}
+.email-options>div:first-child{display:flex;align-items:baseline;justify-content:space-between;gap:15px}
+.email-options strong{font:600 14px Sora}
+.email-options small{color:#9c9c97;font-size:11px}
+.email-option-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.email-option{display:flex;align-items:center;justify-content:center;min-height:43px;padding:10px 12px;border:1px solid #ffffff2d;border-radius:10px;background:#111;color:#fff;font-size:12px;font-weight:600;text-align:center;cursor:pointer;transition:border-color .25s,background-color .25s,color .25s,transform .25s}
+.email-option:hover,.email-option:focus-visible{border-color:var(--orange);background:var(--orange);color:#111;transform:translateY(-2px)}
 @media(max-width:900px){.enterprise-panel{grid-template-columns:1fr;gap:42px}.enterprise-copy>p{max-width:720px}.enterprise-direct-mail{margin-top:0}}
-@media(max-width:600px){.enterprise-inquiry{padding-bottom:76px}.enterprise-panel{padding:28px 20px;border-radius:22px}.enterprise-copy h2{font-size:clamp(34px,10vw,46px)}.enterprise-form{grid-template-columns:1fr;padding:22px 16px;border-radius:18px}.enterprise-form .field,.enterprise-form .field.full,.enterprise-form-head{grid-column:1}.enterprise-form-head{align-items:flex-start;flex-direction:column;gap:5px}.enterprise-benefits{margin-top:28px}}
-@media(prefers-reduced-motion:reduce){.enterprise-direct-mail strong,.enterprise-form .field input,.enterprise-form .field select,.enterprise-form .field textarea{transition:none}}
+@media(max-width:600px){.enterprise-inquiry{padding-bottom:76px}.enterprise-panel{padding:28px 20px;border-radius:22px}.enterprise-copy h2{font-size:clamp(34px,10vw,46px)}.enterprise-form{grid-template-columns:1fr;padding:22px 16px;border-radius:18px}.enterprise-form .field,.enterprise-form .field.full,.enterprise-form-head{grid-column:1}.enterprise-form-head{align-items:flex-start;flex-direction:column;gap:5px}.enterprise-benefits{margin-top:28px}.email-options>div:first-child{align-items:flex-start;flex-direction:column;gap:3px}.email-option-actions{grid-template-columns:1fr}.email-option{min-height:46px}}
+@media(prefers-reduced-motion:reduce){.enterprise-direct-mail strong,.enterprise-form .field input,.enterprise-form .field select,.enterprise-form .field textarea,.email-options,.email-option{transition:none}}
