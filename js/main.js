@@ -65,3 +65,27 @@ document.querySelectorAll('form[data-whatsapp-form]').forEach(form=>form.addEven
   const popup=window.open(url,'_blank');
   if(popup)popup.opener=null;else window.location.href=url;
 }));
+document.querySelectorAll('form[data-email-form]').forEach(form=>form.addEventListener('submit',e=>{
+  e.preventDefault();
+  if(!form.reportValidity())return;
+  const data=new FormData(form);
+  const value=name=>String(data.get(name)||'').trim();
+  const subject=`Kurumsal Proje Teklif Talebi - ${value('company')}`;
+  const lines=[
+    'Merhaba Meray Reklam, web siteniz üzerinden kurumsal proje teklif talebi gönderiyorum.',
+    '',
+    `Firma / Kurum: ${value('company')}`,
+    `Yetkili Kişi: ${value('contactName')}`,
+    `E-posta: ${value('corporateEmail')}`,
+    `Telefon: ${value('corporatePhone')}`,
+    `Proje Türü: ${value('projectType')}`,
+    `Uygulama Konumu: ${value('projectLocation')}`,
+    `Proje Ölçeği: ${value('projectScale')}`,
+    '',
+    'Proje Özeti:',
+    value('projectDetails'),
+    '',
+    'İlgili proje dosyaları bu e-postaya eklenecektir.'
+  ];
+  window.location.href=`mailto:merayreklam@hotmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+}));

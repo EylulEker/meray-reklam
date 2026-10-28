@@ -1,0 +1,34 @@
+.enterprise-inquiry{padding:0 0 var(--section);background:var(--paper)}
+.enterprise-panel{position:relative;display:grid;grid-template-columns:minmax(290px,.82fr) minmax(0,1.28fr);gap:clamp(48px,7vw,104px);overflow:hidden;padding:clamp(34px,5vw,72px);border-radius:32px;background:#121212;color:#fff;box-shadow:0 30px 80px rgba(12,12,12,.16)}
+.enterprise-panel:before{content:"";position:absolute;right:-140px;top:-180px;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(245,130,32,.2),rgba(245,130,32,0) 68%);pointer-events:none}
+.enterprise-panel:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.025),transparent 38%);pointer-events:none}
+.enterprise-copy,.enterprise-form{position:relative;z-index:1}
+.enterprise-copy{display:flex;flex-direction:column;align-items:flex-start}
+.enterprise-copy h2{margin:24px 0 22px;font:600 clamp(36px,4.1vw,62px)/1.06 Sora,Arial,sans-serif;letter-spacing:-.05em}
+.enterprise-copy>p{max-width:590px;margin:0;color:#b6b6b1;font-size:16px;line-height:1.75}
+.enterprise-benefits{display:grid;gap:0;width:100%;margin:36px 0 32px;padding:0;list-style:none;border-top:1px solid #ffffff24}
+.enterprise-benefits li{display:flex;align-items:center;gap:17px;padding:15px 0;border-bottom:1px solid #ffffff24;color:#deded9;font-size:14px}
+.enterprise-benefits span{color:var(--orange);font:600 10px Sora;letter-spacing:.12em}
+.enterprise-direct-mail{display:grid;gap:2px;margin-top:auto;padding-top:10px;color:#fff}
+.enterprise-direct-mail small{color:#858580;font-size:10px;letter-spacing:.13em;text-transform:uppercase}
+.enterprise-direct-mail strong{font-weight:500;transition:color .25s}
+.enterprise-direct-mail:hover strong{color:var(--orange)}
+.enterprise-form{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:clamp(24px,3.2vw,42px);border:1px solid #ffffff24;border-radius:24px;background:rgba(255,255,255,.055);backdrop-filter:blur(10px)}
+.enterprise-form-head{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:7px;padding-bottom:19px;border-bottom:1px solid #ffffff24}
+.enterprise-form-head span{font:600 19px Sora}
+.enterprise-form-head small{color:var(--orange);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+.enterprise-form .field{gap:7px}
+.enterprise-form .field label{color:#c8c8c3;font-size:12px}
+.enterprise-form .field input,.enterprise-form .field select,.enterprise-form .field textarea{min-width:0;padding:13px 14px;border:1px solid #ffffff29;border-radius:12px;background:#0a0a0a66;color:#fff;transition:border-color .25s,background-color .25s,box-shadow .25s}
+.enterprise-form .field input::placeholder,.enterprise-form .field textarea::placeholder{color:#70706c}
+.enterprise-form .field input:focus,.enterprise-form .field select:focus,.enterprise-form .field textarea:focus{border-color:var(--orange);background:#0a0a0a;box-shadow:0 0 0 3px rgba(245,130,32,.12)}
+.enterprise-form .field select{color-scheme:dark}
+.enterprise-form .field textarea{resize:vertical}
+.enterprise-submit{margin-top:4px}
+.btn-email{width:100%;border-radius:13px;background:var(--orange);color:#111}
+.btn-email:hover{background:#ff963d}
+.btn-email .btn-icon{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.enterprise-notice{margin:2px 0 0;color:#8f8f8a;font-size:12px;line-height:1.55}
+@media(max-width:900px){.enterprise-panel{grid-template-columns:1fr;gap:42px}.enterprise-copy>p{max-width:720px}.enterprise-direct-mail{margin-top:0}}
+@media(max-width:600px){.enterprise-inquiry{padding-bottom:76px}.enterprise-panel{padding:28px 20px;border-radius:22px}.enterprise-copy h2{font-size:clamp(34px,10vw,46px)}.enterprise-form{grid-template-columns:1fr;padding:22px 16px;border-radius:18px}.enterprise-form .field,.enterprise-form .field.full,.enterprise-form-head{grid-column:1}.enterprise-form-head{align-items:flex-start;flex-direction:column;gap:5px}.enterprise-benefits{margin-top:28px}}
+@media(prefers-reduced-motion:reduce){.enterprise-direct-mail strong,.enterprise-form .field input,.enterprise-form .field select,.enterprise-form .field textarea{transition:none}}
